@@ -1,0 +1,51 @@
+pipeline {
+  agent any
+
+  environment {
+    AWS_REGION = "us-east-1"
+    ACCOUNT_ID = "529088274428"
+    BACKEND_REPO = "${ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com/inventory-backend"
+    FRONTEND_REPO = "${ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com/inventory-frontend"
+  }
+
+  stages {
+
+    stage('Checkout') {
+      steps {
+        checkout scm
+      }
+    }
+
+    stage('Login to ECR') {
+      steps {
+        sh '''
+        aws ecr get-login-password --region $AWS_REGION | \
+        docker login --username AWS --password-stdin $ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com
+        '''
+      }
+    }
+
+    stage('Build Backend Image') {
+      steps {
+        sh '''
+        cd backend
+        docker build -t inventory-backend .
+        docker tag inventory-backend:latest $BACKEND_REPO:latest
+        docker push $BACKEND_REPO:latest
+        '''
+      }
+    }
+
+    stage('Build Frontend Image') {
+      steps {
+        sh '''
+        cd frontend
+        docker build -t inventory-frontend .
+        docker tag inventory-frontend:latest $FRONTEND_REPO:latest
+        docker push $FRONTEND_REPO:latest
+        '''
+      }
+    }
+  }
+}
+
