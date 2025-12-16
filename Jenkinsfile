@@ -2,14 +2,14 @@ pipeline {
   agent any
 
   environment {
-    AWS_REGION = "ap-south-1"
+    AWS_REGION = "us-east-1"
     ACCOUNT_ID = "529088274428"
 
     BACKEND_REPO  = "${ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com/inventory-backend"
     FRONTEND_REPO = "${ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com/inventory-frontend"
 
-    AWS_ACCESS_KEY_ID     = credentials('ASIAXWMA6L76NUNXLDQD')
-    AWS_SECRET_ACCESS_KEY = credentials('lmLNQeW0M9aR6Phef66UknzWyOwTH9vz4YoCK7LC')
+    AWS_ACCESS_KEY_ID     = credentials('aws-access-key-id')
+    AWS_SECRET_ACCESS_KEY = credentials('aws-secret-access-key')
   }
 
   stages {
